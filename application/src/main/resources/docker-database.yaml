@@ -1,0 +1,12 @@
+version: "3.9"  # optional since v1.27.0
+services:
+  postgres:
+    container_name: postgres
+    hostname: postgres
+    image: postgres:16.2-alpine@sha256:bbd7346fab25b7e0b25f214829d6ebfb78ef0465059492e46dee740ce8fcd844
+    environment:
+      POSTGRES_PASSWORD: devbooks
+      POSTGRES_USERNAME: devbooks
+      POSTGRES_DB: shopping
+    ports:
+      - 5432:5432

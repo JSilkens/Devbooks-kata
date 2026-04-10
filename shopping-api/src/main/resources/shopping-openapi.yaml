@@ -1,0 +1,40 @@
+openapi: 3.1.0
+info:
+  title: Devbooks
+  description: Devbooks shopping API
+  version: 1.0.0
+servers:
+  - url: 'http://localhost:8080'
+  - url: 'https://devbooks.jsilkens.be'
+tags:
+  - name: Books
+    description: Actions on books
+  - name: Cart
+    description: Actions on the shopping cart
+  - name: Dummy
+    description: Dummy actions
+
+paths:
+  /dummy:
+    get:
+      tags:
+        - Dummy
+      summary: Get a dummy object
+      operationId: getDummy
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DummyObject'
+
+components:
+  schemas:
+    DummyObject:
+      type: object
+      properties:
+        id:
+          type: string
+        name:
+          type: string
