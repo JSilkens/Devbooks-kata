@@ -38,7 +38,9 @@ class BookControllerTest {
 
     @BeforeEach
     void setUp() {
-        mockMvc = MockMvcBuilders.standaloneSetup(bookController).build();
+        mockMvc = MockMvcBuilders.standaloneSetup(bookController)
+                .setControllerAdvice(new GlobalExceptionHandler())
+                .build();
     }
 
     @Test
@@ -77,7 +79,8 @@ class BookControllerTest {
         // WHEN & THEN
         mockMvc.perform(get("/book/{isbn}", isbn)
                         .accept(MediaType.APPLICATION_JSON))
-                .andExpect(status().isNotFound());
+                .andExpect(status().isNotFound())
+                .andExpect(jsonPath("$.detail").value("Book not found"));
     }
 
     @Test
@@ -90,6 +93,7 @@ class BookControllerTest {
         // WHEN & THEN
         mockMvc.perform(get("/book/{isbn}", isbn)
                         .accept(MediaType.APPLICATION_JSON))
-                .andExpect(status().isBadRequest());
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("$.detail").value("Invalid ISBN13"));
     }
 }

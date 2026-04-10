@@ -4,6 +4,11 @@ management:
       probes:
         enabled: true
 
+spring:
+  mvc:
+    problemdetails:
+      enabled: true
+
 springdoc:
   swagger-ui:
     path: '/'

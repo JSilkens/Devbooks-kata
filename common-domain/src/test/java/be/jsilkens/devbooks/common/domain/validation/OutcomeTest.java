@@ -3,8 +3,6 @@ package be.jsilkens.devbooks.common.domain.validation;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
-import java.util.Optional;
-
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
@@ -42,10 +40,10 @@ class OutcomeTest {
     @DisplayName("Given a Success outcome, when flatMap is called, it should transform to a new Outcome")
     void givenSuccessOutcome_whenFlatMap_thenTransformToNewOutcome() {
         // GIVEN
-        Outcome<String> outcome = new Outcome.Success<>("Hello");
+        var outcome = new Outcome.Success<>("Hello");
 
         // WHEN
-        Outcome<Integer> result = outcome.flatMap(s -> new Outcome.Success<>(s.length()));
+        var result = outcome.flatMap(s -> new Outcome.Success<>(s.length()));
 
         // THEN
         assertThat(result).isInstanceOf(Outcome.Success.class);
@@ -70,10 +68,10 @@ class OutcomeTest {
     @DisplayName("Given a Success outcome, when toOptional is called, it should return a present Optional")
     void givenSuccessOutcome_whenToOptional_thenReturnPresentOptional() {
         // GIVEN
-        Outcome<String> outcome = new Outcome.Success<>("Hello");
+        var outcome = new Outcome.Success<>("Hello");
 
         // WHEN
-        Optional<String> optional = outcome.toOptional();
+        var optional = outcome.toOptional();
 
         // THEN
         assertThat(optional).isPresent().contains("Hello");
@@ -83,10 +81,10 @@ class OutcomeTest {
     @DisplayName("Given a Failure outcome, when toOptional is called, it should return an empty Optional")
     void givenFailureOutcome_whenToOptional_thenReturnEmptyOptional() {
         // GIVEN
-        Outcome<String> outcome = new Outcome.Failure<>("Error");
+        var outcome = new Outcome.Failure<>("Error");
 
         // WHEN
-        Optional<String> optional = outcome.toOptional();
+        var optional = outcome.toOptional();
 
         // THEN
         assertThat(optional).isEmpty();
@@ -105,11 +103,11 @@ class OutcomeTest {
     @DisplayName("Given multiple Success outcomes, when merged with a value, it should return a Success containing that value")
     void givenSuccessOutcomes_whenMerge_thenReturnSuccessWithValue() {
         // GIVEN
-        Outcome<String> o1 = new Outcome.Success<>("A");
-        Outcome<Integer> o2 = new Outcome.Success<>(1);
+        var o1 = new Outcome.Success<>("A");
+        var o2 = new Outcome.Success<>(1);
 
         // WHEN
-        Outcome<String> result = Outcome.merge("Result", o1, o2);
+        var result = Outcome.merge("Result", o1, o2);
 
         // THEN
         assertThat(result).isInstanceOf(Outcome.Success.class);
@@ -120,12 +118,12 @@ class OutcomeTest {
     @DisplayName("Given some Failure outcomes, when merged, it should return a Failure with aggregated messages")
     void givenFailureOutcomes_whenMerge_thenReturnFailureWithAggregatedMessages() {
         // GIVEN
-        Outcome<String> o1 = new Outcome.Success<>("A");
-        Outcome<String> o2 = new Outcome.Failure<>("Error 1");
-        Outcome<String> o3 = new Outcome.Failure<>("Error 2");
+        var o1 = new Outcome.Success<>("A");
+        var o2 = new Outcome.Failure<>("Error 1");
+        var o3 = new Outcome.Failure<>("Error 2");
 
         // WHEN
-        Outcome<String> result = Outcome.merge("Result", o1, o2, o3);
+        var result = Outcome.merge("Result", o1, o2, o3);
 
         // THEN
         assertThat(result).isInstanceOf(Outcome.Failure.class);

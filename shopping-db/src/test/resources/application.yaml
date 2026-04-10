@@ -10,6 +10,4 @@ spring:
     show-sql: true
   flyway:
     enabled: true
-  mvc:
-    problemdetails:
-      enabled: true
+    locations: classpath:db/migration

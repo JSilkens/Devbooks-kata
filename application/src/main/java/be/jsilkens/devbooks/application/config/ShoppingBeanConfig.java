@@ -1,7 +1,5 @@
 package be.jsilkens.devbooks.application.config;
 
-import lombok.AccessLevel;
-import lombok.NoArgsConstructor;
 import org.springframework.beans.factory.config.BeanFactoryPostProcessor;
 import org.springframework.beans.factory.support.BeanDefinitionRegistry;
 import org.springframework.context.ApplicationContext;
@@ -13,8 +11,7 @@ import org.springframework.core.type.classreading.MetadataReader;
 import org.springframework.core.type.classreading.MetadataReaderFactory;
 import org.springframework.core.type.filter.TypeFilter;
 
-@Configuration
-@NoArgsConstructor(access = AccessLevel.PRIVATE)
+@Configuration(proxyBeanMethods = false)
 public class ShoppingBeanConfig {
     @Bean
     static BeanFactoryPostProcessor shoppingBeanFactoryPostProcessor(ApplicationContext beanRegistry) {
@@ -28,7 +25,6 @@ public class ShoppingBeanConfig {
         ClassPathBeanDefinitionScanner beanDefinitionScanner = new ClassPathBeanDefinitionScanner(beanRegistry);
         beanDefinitionScanner.addIncludeFilter(addUseCaseFilter());
         beanDefinitionScanner.scan(
-                "be.jsilkens.devbooks.shopping.usecase",
                 "be.jsilkens.devbooks.shopping.usecase"
         );
     }

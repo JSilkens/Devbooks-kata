@@ -46,20 +46,12 @@ public sealed interface Outcome<T> permits Outcome.Success, Outcome.Failure {
 
         @Override
         public <R> Outcome<R> map(Function<T, R> mapper) {
-            try {
-                return new Success<>(mapper.apply(value));
-            } catch (Exception e) {
-                return new Failure<>(e.getMessage());
-            }
+            return new Success<>(mapper.apply(value));
         }
 
         @Override
         public <R> Outcome<R> flatMap(Function<T, Outcome<R>> mapper) {
-            try {
-                return mapper.apply(value);
-            } catch (Exception e) {
-                return new Failure<>(e.getMessage());
-            }
+            return mapper.apply(value);
         }
 
         @Override
@@ -71,10 +63,12 @@ public sealed interface Outcome<T> permits Outcome.Success, Outcome.Failure {
     @ToString
     @EqualsAndHashCode
     @Getter
+    @lombok.extern.slf4j.Slf4j
     final class Failure<T> implements Outcome<T> {
         private final String message;
 
         public Failure(String message) {
+            log.error("Validation failed: {}", message);
             this.message = message;
         }
 
