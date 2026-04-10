@@ -5,6 +5,9 @@ management:
         enabled: true
 
 spring:
+  flyway:
+    enabled: true
+    locations: classpath*:db/migration
   mvc:
     problemdetails:
       enabled: true
