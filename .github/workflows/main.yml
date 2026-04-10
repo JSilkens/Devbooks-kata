@@ -1,0 +1,20 @@
+name: Main Deployment pipeline
+on:
+  push:
+    branches:
+      - 'main'
+
+concurrency:
+  group: ${{ github.ref }}
+  cancel-in-progress: false
+
+permissions:
+  id-token: write
+  contents: read
+
+jobs:
+  build:
+    uses: ./.github/workflows/build.yml
+  deploy:
+    needs: build
+    uses: ./.github/workflows/deploy.yml
