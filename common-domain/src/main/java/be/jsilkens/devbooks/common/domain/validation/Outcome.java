@@ -4,6 +4,8 @@ import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.ToString;
 
+import java.util.Arrays;
+import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.function.Function;
@@ -14,6 +16,20 @@ public sealed interface Outcome<T> permits Outcome.Success, Outcome.Failure {
     <R> Outcome<R> flatMap(Function<T, Outcome<R>> mapper);
 
     Optional<T> toOptional();
+
+
+    static <T> Outcome<T> merge(T value, Outcome<?>... outcomes) {
+        List<String> errors = Arrays.stream(outcomes)
+                .filter(Objects::nonNull)
+                .map(o -> ((Failure<?>) o).getMessage())
+                .toList();
+
+        if (errors.isEmpty()) {
+            return new Success<>(value);
+        } else {
+            return new Failure<>(String.join(", ", errors));
+        }
+    }
 
     @ToString
     @EqualsAndHashCode

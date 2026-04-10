@@ -81,19 +81,21 @@
                             <inputSpec>${project.basedir}/src/main/resources/shopping-openapi.yaml</inputSpec>
                             <generatorName>spring</generatorName>
                             <generateModels>true</generateModels>
-                            <modelPackage>be.jsilkens.devbooks.shopping.api.controller</modelPackage>
+                            <modelPackage>be.jsilkens.devbooks.shopping.api.model</modelPackage>
                             <generateApis>true</generateApis>
                             <apiPackage>
                                 be.jsilkens.devbooks.shopping.api.controller
                             </apiPackage>
                             <configOptions>
+                                <useTags>true</useTags>
                                 <!-- Generate API files based on tags -->
                                 <interfaceOnly>true</interfaceOnly>
                                 <dateLibrary>java8-localdatetime</dateLibrary>
                                 <additionalModelTypeAnnotations>@lombok.Builder</additionalModelTypeAnnotations>
                                 <requestMappingMode>none</requestMappingMode>
                                 <skipDefaultInterface>true</skipDefaultInterface>
-                                <useSpringBoot3>true</useSpringBoot3>
+                                <useSpringBoot4>true</useSpringBoot4>
+                                <useProblemDetail>true</useProblemDetail>
                             </configOptions>
                         </configuration>
                     </execution>

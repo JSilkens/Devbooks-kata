@@ -14,10 +14,10 @@ class OutcomeTest {
     @DisplayName("Given a Success outcome, when map is called, it should transform the value")
     void givenSuccessOutcome_whenMap_thenTransformValue() {
         // GIVEN
-        Outcome<String> outcome = new Outcome.Success<>("Hello");
+        var outcome = new Outcome.Success<>("Hello");
 
         // WHEN
-        Outcome<Integer> result = outcome.map(String::length);
+        var result = outcome.map(String::length);
 
         // THEN
         assertThat(result).isInstanceOf(Outcome.Success.class);
@@ -101,4 +101,35 @@ class OutcomeTest {
                 .hasMessage("Success value cannot be null");
     }
 
+    @Test
+    @DisplayName("Given multiple Success outcomes, when merged with a value, it should return a Success containing that value")
+    void givenSuccessOutcomes_whenMerge_thenReturnSuccessWithValue() {
+        // GIVEN
+        Outcome<String> o1 = new Outcome.Success<>("A");
+        Outcome<Integer> o2 = new Outcome.Success<>(1);
+
+        // WHEN
+        Outcome<String> result = Outcome.merge("Result", o1, o2);
+
+        // THEN
+        assertThat(result).isInstanceOf(Outcome.Success.class);
+        assertThat(((Outcome.Success<String>) result).getValue()).isEqualTo("Result");
+    }
+
+    @Test
+    @DisplayName("Given some Failure outcomes, when merged, it should return a Failure with aggregated messages")
+    void givenFailureOutcomes_whenMerge_thenReturnFailureWithAggregatedMessages() {
+        // GIVEN
+        Outcome<String> o1 = new Outcome.Success<>("A");
+        Outcome<String> o2 = new Outcome.Failure<>("Error 1");
+        Outcome<String> o3 = new Outcome.Failure<>("Error 2");
+
+        // WHEN
+        Outcome<String> result = Outcome.merge("Result", o1, o2, o3);
+
+        // THEN
+        assertThat(result).isInstanceOf(Outcome.Failure.class);
+        assertThat(((Outcome.Failure<String>) result).getMessage())
+                .isEqualTo("Error 1, Error 2");
+    }
 }
