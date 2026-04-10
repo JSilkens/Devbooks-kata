@@ -3,4 +3,17 @@ spring:
     compose:
       lifecycle-management: start-and-stop
       enabled: true
-      file: docker-database.yaml
+      file: ../docker-database.yaml
+  datasource:
+    url: jdbc:postgresql://localhost:5432/shopping
+    username: devbooks
+    password: devbooks
+    driver-class-name: org.postgresql.Driver
+  jpa:
+    hibernate:
+      ddl-auto: validate
+  flyway:
+    enabled: true
+  mvc:
+    problemdetails:
+      enabled: true

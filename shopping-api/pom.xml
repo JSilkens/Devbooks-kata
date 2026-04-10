@@ -24,17 +24,6 @@
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-test</artifactId>
             <scope>test</scope>
-            <exclusions>
-                <exclusion>
-                    <groupId>org.junit.vintage</groupId>
-                    <artifactId>junit-vintage-engine</artifactId>
-                </exclusion>
-            </exclusions>
-        </dependency>
-        <dependency>
-            <groupId>org.testcontainers</groupId>
-            <artifactId>junit-jupiter</artifactId>
-            <scope>test</scope>
         </dependency>
         <dependency>
             <groupId>org.projectlombok</groupId>
@@ -81,19 +70,21 @@
                             <inputSpec>${project.basedir}/src/main/resources/shopping-openapi.yaml</inputSpec>
                             <generatorName>spring</generatorName>
                             <generateModels>true</generateModels>
-                            <modelPackage>be.jsilkens.devbooks.shopping.api.controller</modelPackage>
+                            <modelPackage>be.jsilkens.devbooks.shopping.api.model</modelPackage>
                             <generateApis>true</generateApis>
                             <apiPackage>
                                 be.jsilkens.devbooks.shopping.api.controller
                             </apiPackage>
                             <configOptions>
+                                <useTags>true</useTags>
                                 <!-- Generate API files based on tags -->
                                 <interfaceOnly>true</interfaceOnly>
                                 <dateLibrary>java8-localdatetime</dateLibrary>
                                 <additionalModelTypeAnnotations>@lombok.Builder</additionalModelTypeAnnotations>
                                 <requestMappingMode>none</requestMappingMode>
                                 <skipDefaultInterface>true</skipDefaultInterface>
-                                <useSpringBoot3>true</useSpringBoot3>
+                                <useSpringBoot4>true</useSpringBoot4>
+                                <useProblemDetail>true</useProblemDetail>
                             </configOptions>
                         </configuration>
                     </execution>
