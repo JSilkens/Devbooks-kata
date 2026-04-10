@@ -20,7 +20,7 @@ public sealed interface Outcome<T> permits Outcome.Success, Outcome.Failure {
 
     static <T> Outcome<T> merge(T value, Outcome<?>... outcomes) {
         List<String> errors = Arrays.stream(outcomes)
-                .filter(Objects::nonNull)
+                .filter(o -> o instanceof Failure)
                 .map(o -> ((Failure<?>) o).getMessage())
                 .toList();
 
