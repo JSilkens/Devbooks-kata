@@ -5,6 +5,10 @@ management:
         enabled: true
 
 spring:
+  data:
+    web:
+      pageable:
+        default-page-size: 10
   flyway:
     enabled: true
     locations: classpath*:db/migration
