@@ -16,6 +16,5 @@ public abstract class IntegrationTestBase {
             .withDatabaseName("shopping")
             .withUsername("devbooks")
             .withPassword("devbooks");
-    ;
 
 }

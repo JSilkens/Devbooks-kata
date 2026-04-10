@@ -12,6 +12,9 @@ public abstract class IntegrationTestBase {
 
     @Container
     @ServiceConnection
-    static PostgreSQLContainer<?> postgres = new PostgreSQLContainer<>("postgres:16.2-alpine");
+    static PostgreSQLContainer<?> postgres = new PostgreSQLContainer<>("postgres:16.2-alpine")
+            .withDatabaseName("shopping")
+            .withUsername("devbooks")
+            .withPassword("devbooks");
 
 }
