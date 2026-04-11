@@ -1,33 +1,32 @@
 package be.jsilkens.devbooks.shopping.api.mapper;
 
-import be.jsilkens.devbooks.shopping.api.model.*;
+import be.jsilkens.devbooks.shopping.api.model.DiscountSetDTO;
+import be.jsilkens.devbooks.shopping.api.model.ViewCartItemResponseDTO;
+import be.jsilkens.devbooks.shopping.api.model.ViewCartResponseDTO;
 import be.jsilkens.devbooks.shopping.domain.CartItem;
 import be.jsilkens.devbooks.shopping.domain.ShoppingCart;
+import be.jsilkens.devbooks.shopping.domain.discount.DiscountCalculator;
+import be.jsilkens.devbooks.shopping.domain.discount.DiscountSet;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
-import java.math.BigDecimal;
 import java.math.RoundingMode;
 
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class CartApiMapper {
 
-    public static ShoppingCartResponseDTO map(ShoppingCart cart) {
-        var responseDTO = new ShoppingCartResponseDTO();
-        responseDTO.setBooks(cart.getItems().stream()
-                .map(CartApiMapper::mapToOldCartItemResponseDTO)
-                .toList());
-        responseDTO.setTotalPrice(mapPrice(cart.getTotalPrice().amount(), cart.getTotalPrice().currency().name()));
-        return responseDTO;
-    }
-
-    public static ViewCartResponseDTO mapToViewCartResponseDTO(ShoppingCart cart) {
+    public static ViewCartResponseDTO map(ShoppingCart cart) {
+        var discountResult = DiscountCalculator.calculate(cart);
         return ViewCartResponseDTO.builder()
                 .books(cart.getItems().stream()
                         .map(CartApiMapper::mapToViewCartItemResponseDTO)
                         .toList())
-                .totalPrice(cart.getTotalPrice().amount().setScale(2, RoundingMode.HALF_UP))
+                .totalPrice(discountResult.totalPrice().amount().setScale(2, RoundingMode.HALF_UP))
+                .totalSavings(discountResult.totalSavings().amount().setScale(2, RoundingMode.HALF_UP))
+                .discountBreakdown(discountResult.discountSets().stream()
+                        .map(CartApiMapper::mapToDiscountSetDTO)
+                        .toList())
                 .build();
     }
 
@@ -43,22 +42,13 @@ public class CartApiMapper {
                 .build();
     }
 
-    public static CartItemResponseDTO mapToOldCartItemResponseDTO(CartItem item) {
-        var responseDTO = new CartItemResponseDTO();
-        responseDTO.setTitle(item.getBook().getTitle());
-        responseDTO.setPrice(mapPrice(item.getBook().getPrice().amount(), item.getBook().getPrice().currency().name()));
-        responseDTO.setQuantity(item.getQuantity());
-        responseDTO.setDetailsLink(ServletUriComponentsBuilder.fromCurrentContextPath()
-                .path("/api/book/")
-                .path(item.getBook().getIsbn().value())
-                .toUriString());
-        return responseDTO;
-    }
-
-    private static Price mapPrice(BigDecimal amount, String currency) {
-        var price = new Price();
-        price.setValue(amount.setScale(2, RoundingMode.HALF_UP));
-        price.setCurrency(currency);
-        return price;
+    private static DiscountSetDTO mapToDiscountSetDTO(DiscountSet ds) {
+        return DiscountSetDTO.builder()
+                .description(ds.description())
+                .booksIncluded(ds.booksIncluded())
+                .originalPrice(ds.originalPrice().amount().setScale(2, RoundingMode.HALF_UP))
+                .discountedPrice(ds.discountedPrice().amount().setScale(2, RoundingMode.HALF_UP))
+                .savings(ds.savings().amount().setScale(2, RoundingMode.HALF_UP))
+                .build();
     }
 }

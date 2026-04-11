@@ -3,7 +3,6 @@ package be.jsilkens.devbooks.shopping.api.controller;
 import be.jsilkens.devbooks.common.domain.validation.Outcome;
 import be.jsilkens.devbooks.shopping.api.mapper.CartApiMapper;
 import be.jsilkens.devbooks.shopping.api.model.AddCartItemRequestDTO;
-import be.jsilkens.devbooks.shopping.api.model.ShoppingCartResponseDTO;
 import be.jsilkens.devbooks.shopping.api.model.UpdateCartItemRequestDTO;
 import be.jsilkens.devbooks.shopping.api.model.ViewCartResponseDTO;
 import be.jsilkens.devbooks.shopping.domain.ShoppingCart;
@@ -27,7 +26,7 @@ public class CartController implements CartApi {
     private final ViewCartUseCase viewCartUseCase;
 
     @Override
-    public ResponseEntity<ShoppingCartResponseDTO> addBookToCart(AddCartItemRequestDTO addCartItemRequestDTO) {
+    public ResponseEntity<ViewCartResponseDTO> addBookToCart(AddCartItemRequestDTO addCartItemRequestDTO) {
         var result = addBookToCartUseCase.execute(addCartItemRequestDTO.getIsbn());
 
         checkNotFoundFailure(result);
@@ -41,7 +40,7 @@ public class CartController implements CartApi {
 
         checkNotFoundFailure(result);
 
-        return ResponseEntity.ok(CartApiMapper.mapToViewCartResponseDTO(((Outcome.Success<ShoppingCart>) result).getValue()));
+        return ResponseEntity.ok(CartApiMapper.map(((Outcome.Success<ShoppingCart>) result).getValue()));
     }
 
     @Override
@@ -50,13 +49,13 @@ public class CartController implements CartApi {
 
         checkNotFoundFailure(result);
 
-        return ResponseEntity.ok(CartApiMapper.mapToViewCartResponseDTO(((Outcome.Success<ShoppingCart>) result).getValue()));
+        return ResponseEntity.ok(CartApiMapper.map(((Outcome.Success<ShoppingCart>) result).getValue()));
     }
 
     @Override
     public ResponseEntity<ViewCartResponseDTO> getCart() {
         var cart = viewCartUseCase.execute();
-        return ResponseEntity.ok(CartApiMapper.mapToViewCartResponseDTO(cart));
+        return ResponseEntity.ok(CartApiMapper.map(cart));
     }
 
     private static void checkNotFoundFailure(Outcome<ShoppingCart> result) {

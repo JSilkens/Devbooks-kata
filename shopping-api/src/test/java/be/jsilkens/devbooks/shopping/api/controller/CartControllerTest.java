@@ -95,12 +95,12 @@ class CartControllerTest {
                         .accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.books[0].title").value("Clean Code"))
-                .andExpect(jsonPath("$.books[0].price.value").value(50.00))
-                .andExpect(jsonPath("$.books[0].price.currency").value("EUR"))
+                .andExpect(jsonPath("$.books[0].price_in_eur").value(50.00))
                 .andExpect(jsonPath("$.books[0].quantity").value(1))
                 .andExpect(jsonPath("$.books[0].details_link").value("http://localhost/api/book/" + isbn))
-                .andExpect(jsonPath("$.total_price.value").value(50.00))
-                .andExpect(jsonPath("$.total_price.currency").value("EUR"));
+                .andExpect(jsonPath("$.total_price").value(50.00))
+                .andExpect(jsonPath("$.total_savings").value(0.00))
+                .andExpect(jsonPath("$.discount_breakdown").isEmpty());
     }
 
     @Test
