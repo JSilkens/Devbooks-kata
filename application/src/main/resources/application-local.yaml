@@ -9,11 +9,10 @@ spring:
     username: devbooks
     password: devbooks
     driver-class-name: org.postgresql.Driver
-  jpa:
-    hibernate:
-      ddl-auto: validate
   flyway:
     enabled: true
+    check-location: true
+    locations: classpath:db/migration
   mvc:
     problemdetails:
       enabled: true

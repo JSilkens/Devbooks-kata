@@ -12,7 +12,7 @@ import java.util.UUID;
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
 @Data
 @Builder(setterPrefix = "with")
-@Table(name = "BOOK")
+@Table(name = "book")
 @Entity
 @EntityListeners(AuditingEntityListener.class)
 public class BookDb {

@@ -15,5 +15,5 @@ To build and run the project. You need the following:
 
 To build and test this Project. Run `./mvnw clean install`
 
-To run the project on your local machine, Run `./mvnw spring-boot:run -Dspring.profiles.active=local` Or add 'local' as
+To run the project on your local machine, Run `./mvnw spring-boot:run -pl application -Dspring-boot.run.profiles=local` Or add 'local' as
 the environment in your Intellij's run configuration.

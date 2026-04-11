@@ -12,6 +12,43 @@ tags:
   - name: Cart
     description: Actions on the shopping cart
 paths:
+  /book:
+    get:
+      tags:
+        - Book
+      summary: Get a paginated list of books
+      operationId: getPaginatedBooks
+      parameters:
+        - name: page
+          in: query
+          required: false
+          description: The page number (1-based)
+          schema:
+            type: integer
+            default: 1
+            minimum: 1
+        - name: size
+          in: query
+          required: false
+          description: The number of items per page
+          schema:
+            type: integer
+            default: 10
+            minimum: 1
+      responses:
+        '200':
+          description: Successfully retrieved the paginated list of books
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaginatedBookResponseDTO'
+        '400':
+          description: Invalid pagination parameters
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetail'
+
   /book/{isbn}:
     get:
       tags:
@@ -72,6 +109,61 @@ components:
         price:
           $ref: '#/components/schemas/Price'
 
+    BookListItemDTO:
+      type: object
+      required:
+        - title
+        - author
+        - price
+        - details_link
+      properties:
+        title:
+          type: string
+          example: "Clean Code"
+        author:
+          type: string
+          example: "Robert C. Martin"
+        price:
+          $ref: '#/components/schemas/Price'
+        details_link:
+          type: string
+          example: "/api/book/9780132350884"
+
+    PaginatedBookResponseDTO:
+      type: object
+      required:
+        - items
+        - metadata
+      properties:
+        items:
+          type: array
+          items:
+            $ref: '#/components/schemas/BookListItemDTO'
+        metadata:
+          $ref: '#/components/schemas/PaginationMetadataDTO'
+
+    PaginationMetadataDTO:
+      type: object
+      required:
+        - current_page
+        - page_size
+        - total_items
+        - total_pages
+      properties:
+        current_page:
+          type: integer
+          example: 1
+        page_size:
+          type: integer
+          example: 10
+        total_items:
+          type: integer
+          format: int64
+          example: 15
+        total_pages:
+          type: integer
+          example: 2
+
     Price:
       type: object
       required:
@@ -79,9 +171,10 @@ components:
         - currency
       properties:
         value:
-          type: number
-          format: double
-          example: 50.00
+          type: string
+          format: decimal
+          pattern: '^\d+\.\d{2}$'
+          example: "50.00"
         currency:
           type: string
           example: "EUR"

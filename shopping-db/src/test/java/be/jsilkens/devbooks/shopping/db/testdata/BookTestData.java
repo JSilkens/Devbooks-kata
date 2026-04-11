@@ -21,7 +21,7 @@ public class BookTestData {
                 .withAuthor("Robert Martin")
                 .withPublicationYear(2008)
                 .withPrice(Money.builder()
-                        .withAmount(BigDecimal.valueOf(50L))
+                        .withAmount(new BigDecimal("50.00"))
                         .withCurrency(EUR)
                         .build())
                 .withIsbn(Isbn13.builder()
@@ -37,7 +37,7 @@ public class BookTestData {
                 .withTitle("Clean Code")
                 .withAuthor("Robert Martin")
                 .withPublicationYear(2008)
-                .withPriceAmount(BigDecimal.valueOf(50L))
+                .withPriceAmount(new BigDecimal("50.00"))
                 .withPriceCurrency(EUR)
                 .withIsbn(isbn)
                 .build();

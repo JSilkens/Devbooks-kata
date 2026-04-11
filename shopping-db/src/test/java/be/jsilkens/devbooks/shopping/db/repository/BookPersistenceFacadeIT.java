@@ -49,4 +49,17 @@ class BookPersistenceFacadeIT extends IntegrationTestBase {
         // Then
         assertThat(actual).isEmpty();
     }
+
+    @Test
+    @DisplayName("When finding all books paginated, then it should return a paginated result")
+    void whenFindAll_thenReturnsPaginatedResult() {
+        // When
+        var actual = bookPersistenceFacade.findAll(1, 10);
+
+        // Then
+        assertThat(actual.items()).isNotEmpty();
+        assertThat(actual.metadata().currentPage()).isEqualTo(1);
+        assertThat(actual.metadata().pageSize()).isEqualTo(10);
+        assertThat(actual.metadata().totalItems()).isGreaterThanOrEqualTo(1);
+    }
 }

@@ -1,14 +1,14 @@
-INSERT INTO BOOK (ID, TITLE, AUTHOR, PUBLICATION_YEAR, PRICE_AMOUNT, PRICE_CURRENCY, ISBN)
+INSERT INTO book (id, title, author, publication_year, price_amount, price_currency, isbn)
 VALUES ('c3b0e3e1-3b1e-4b1e-8b1e-1b1e1b1e1b1e', 'Clean Code', 'Robert Martin', 2008, 50.00, 'EUR', '9780132350884');
-INSERT INTO BOOK (ID, TITLE, AUTHOR, PUBLICATION_YEAR, PRICE_AMOUNT, PRICE_CURRENCY, ISBN)
+INSERT INTO book (id, title, author, publication_year, price_amount, price_currency, isbn)
 VALUES ('d4b0e3e1-3b1e-4b1e-8b1e-1b1e1b1e1b1e', 'The Clean Coder', 'Robert Martin', 2011, 50.00, 'EUR',
-        '9780137081072');
-INSERT INTO BOOK (ID, TITLE, AUTHOR, PUBLICATION_YEAR, PRICE_AMOUNT, PRICE_CURRENCY, ISBN)
+        '9780132542883');
+INSERT INTO book (id, title, author, publication_year, price_amount, price_currency, isbn)
 VALUES ('e5b0e3e1-3b1e-4b1e-8b1e-1b1e1b1e1b1e', 'Clean Architecture', 'Robert Martin', 2017, 50.00, 'EUR',
         '9780134494166');
-INSERT INTO BOOK (ID, TITLE, AUTHOR, PUBLICATION_YEAR, PRICE_AMOUNT, PRICE_CURRENCY, ISBN)
+INSERT INTO book (id, title, author, publication_year, price_amount, price_currency, isbn)
 VALUES ('f6b0e3e1-3b1e-4b1e-8b1e-1b1e1b1e1b1e', 'Test Driven Development by Example', 'Kent Beck', 2003, 50.00, 'EUR',
         '9780321146533');
-INSERT INTO BOOK (ID, TITLE, AUTHOR, PUBLICATION_YEAR, PRICE_AMOUNT, PRICE_CURRENCY, ISBN)
+INSERT INTO book (id, title, author, publication_year, price_amount, price_currency, isbn)
 VALUES ('a7b0e3e1-3b1e-4b1e-8b1e-1b1e1b1e1b1e', 'Working Effectively With Legacy Code', 'Michael C. Feathers', 2004,
         50.00, 'EUR', '9780131177055');
