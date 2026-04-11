@@ -38,6 +38,20 @@ public class ShoppingCart {
         return items.removeIf(item -> item.getBook().getIsbn().equals(isbn));
     }
 
+    public boolean updateQuantity(Isbn13 isbn, int quantity) {
+        if (quantity == 0) {
+            return removeBook(isbn);
+        }
+        return items.stream()
+                .filter(item -> item.getBook().getIsbn().equals(isbn))
+                .findFirst()
+                .map(item -> {
+                    item.setQuantity(quantity);
+                    return true;
+                })
+                .orElse(false);
+    }
+
     public Money getTotalPrice() {
         if (items.isEmpty()) {
             return Money.zero(Currency.EUR);

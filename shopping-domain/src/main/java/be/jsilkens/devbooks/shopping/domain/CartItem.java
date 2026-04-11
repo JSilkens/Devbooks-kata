@@ -17,6 +17,10 @@ public class CartItem {
         this.quantity++;
     }
 
+    public void setQuantity(int quantity) {
+        this.quantity = quantity;
+    }
+
     public Money getTotalPrice() {
         return book.getPrice().multiply(quantity);
     }

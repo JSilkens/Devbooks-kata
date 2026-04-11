@@ -147,6 +147,45 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/ProblemDetail'
+  /cart/update/{isbn}:
+    patch:
+      tags:
+        - Cart
+      summary: Update the quantity of a book in the shopping cart
+      operationId: updateCartItemQuantity
+      parameters:
+        - name: isbn
+          in: path
+          required: true
+          description: The ISBN-13 of the book to update
+          schema:
+            type: string
+            pattern: '^\d{13}$'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdateCartItemRequestDTO'
+      responses:
+        '200':
+          description: Successfully updated the book quantity
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ViewCartResponseDTO'
+        '400':
+          description: Invalid ISBN format or negative quantity
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetail'
+        '404':
+          description: Book not found in cart
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetail'
   /cart:
     get:
       tags:
@@ -203,6 +242,16 @@ components:
         isbn:
           type: string
           example: "9780132350884"
+
+    UpdateCartItemRequestDTO:
+      type: object
+      required:
+        - quantity
+      properties:
+        quantity:
+          type: integer
+          minimum: 0
+          example: 3
 
     ShoppingCartResponseDTO:
       type: object
