@@ -171,9 +171,10 @@ components:
         - currency
       properties:
         value:
-          type: number
-          format: double
-          example: 50.00
+          type: string
+          format: decimal
+          pattern: '^\d+\.\d{2}$'
+          example: "50.00"
         currency:
           type: string
           example: "EUR"

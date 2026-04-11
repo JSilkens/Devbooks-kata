@@ -7,13 +7,14 @@ import be.jsilkens.devbooks.shopping.domain.Book;
 import be.jsilkens.devbooks.shopping.domain.BookListItem;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
+import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class BookApiMapper {
 
     public static BookDTO map(Book book) {
         var price = new Price();
-        price.setValue(book.getPrice().amount().doubleValue());
+        price.setValue(book.getPrice().amount());
         price.setCurrency(book.getPrice().currency().name());
 
         var bookDTO = new BookDTO();
@@ -28,14 +29,17 @@ public class BookApiMapper {
 
     public static BookListItemDTO map(BookListItem item) {
         var price = new Price();
-        price.setValue(item.price().amount().doubleValue());
+        price.setValue(item.price().amount());
         price.setCurrency(item.price().currency().name());
 
         var bookListItemDTO = new BookListItemDTO();
         bookListItemDTO.setTitle(item.title());
         bookListItemDTO.setAuthor(item.author());
         bookListItemDTO.setPrice(price);
-        bookListItemDTO.setDetailsLink("/api/book/" + item.isbn().value());
+        bookListItemDTO.setDetailsLink(ServletUriComponentsBuilder.fromCurrentContextPath()
+                .path("/api/book/")
+                .path(item.isbn().value())
+                .toUriString());
 
         return bookListItemDTO;
     }

@@ -29,7 +29,7 @@ public class BookTestData {
                 .title("Clean Code")
                 .author("Robert Martin")
                 .isbn("9780135398579")
-                .price(Price.builder().value(50d).currency("EUR").build())
+                .price(Price.builder().value(new BigDecimal("50.00")).currency("EUR").build())
                 .publicationYear(2008)
                 .build();
     }

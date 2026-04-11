@@ -77,7 +77,7 @@ class BookControllerTest {
                 .andExpect(jsonPath("$.items[0].author").value("Robert C. Martin"))
                 .andExpect(jsonPath("$.items[0].price.value").value(50.00))
                 .andExpect(jsonPath("$.items[0].price.currency").value("EUR"))
-                .andExpect(jsonPath("$.items[0].details_link").value("/api/book/" + isbn))
+                .andExpect(jsonPath("$.items[0].details_link").value("http://localhost/api/book/" + isbn))
                 .andExpect(jsonPath("$.metadata.current_page").value(1))
                 .andExpect(jsonPath("$.metadata.page_size").value(10))
                 .andExpect(jsonPath("$.metadata.total_items").value(1))

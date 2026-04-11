@@ -40,10 +40,10 @@ public class BookController implements BookApi {
 
     @Override
     public ResponseEntity<PaginatedBookResponseDTO> getPaginatedBooks(Integer page, Integer size) {
-        var p = Optional.ofNullable(page).orElse(1);
-        var s = Optional.ofNullable(size).orElse(10);
+        var pageOptional = Optional.ofNullable(page).orElse(1);
+        var sizeOptional = Optional.ofNullable(size).orElse(10);
 
-        var result = getPaginatedBooksUseCase.execute(p, s);
+        var result = getPaginatedBooksUseCase.execute(pageOptional, sizeOptional);
 
         if (result instanceof Outcome.Failure) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, ((Outcome.Failure<PaginatedResult<BookListItem>>) result).getMessage());
