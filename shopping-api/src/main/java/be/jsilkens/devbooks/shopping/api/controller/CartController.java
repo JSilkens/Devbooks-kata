@@ -4,10 +4,12 @@ import be.jsilkens.devbooks.common.domain.validation.Outcome;
 import be.jsilkens.devbooks.shopping.api.mapper.CartApiMapper;
 import be.jsilkens.devbooks.shopping.api.model.AddCartItemRequestDTO;
 import be.jsilkens.devbooks.shopping.api.model.ShoppingCartResponseDTO;
+import be.jsilkens.devbooks.shopping.api.model.UpdateCartItemRequestDTO;
 import be.jsilkens.devbooks.shopping.api.model.ViewCartResponseDTO;
 import be.jsilkens.devbooks.shopping.domain.ShoppingCart;
 import be.jsilkens.devbooks.shopping.usecase.AddBookToCartUseCase;
 import be.jsilkens.devbooks.shopping.usecase.RemoveBookFromCartUseCase;
+import be.jsilkens.devbooks.shopping.usecase.UpdateCartItemQuantityUseCase;
 import be.jsilkens.devbooks.shopping.usecase.ViewCartUseCase;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -21,18 +23,14 @@ public class CartController implements CartApi {
 
     private final AddBookToCartUseCase addBookToCartUseCase;
     private final RemoveBookFromCartUseCase removeBookFromCartUseCase;
+    private final UpdateCartItemQuantityUseCase updateCartItemQuantityUseCase;
     private final ViewCartUseCase viewCartUseCase;
 
     @Override
     public ResponseEntity<ShoppingCartResponseDTO> addBookToCart(AddCartItemRequestDTO addCartItemRequestDTO) {
         var result = addBookToCartUseCase.execute(addCartItemRequestDTO.getIsbn());
 
-        if (result instanceof Outcome.Failure<ShoppingCart> failure) {
-            if (failure.getMessage().contains("not found")) {
-                throw new ResponseStatusException(HttpStatus.NOT_FOUND, failure.getMessage());
-            }
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, failure.getMessage());
-        }
+        checkNotFoundFailure(result);
 
         return ResponseEntity.ok(CartApiMapper.map(((Outcome.Success<ShoppingCart>) result).getValue()));
     }
@@ -41,12 +39,16 @@ public class CartController implements CartApi {
     public ResponseEntity<ViewCartResponseDTO> removeBookFromCart(String isbn) {
         var result = removeBookFromCartUseCase.execute(isbn);
 
-        if (result instanceof Outcome.Failure<ShoppingCart> failure) {
-            if (failure.getMessage().contains("not found")) {
-                throw new ResponseStatusException(HttpStatus.NOT_FOUND, failure.getMessage());
-            }
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, failure.getMessage());
-        }
+        checkNotFoundFailure(result);
+
+        return ResponseEntity.ok(CartApiMapper.mapToViewCartResponseDTO(((Outcome.Success<ShoppingCart>) result).getValue()));
+    }
+
+    @Override
+    public ResponseEntity<ViewCartResponseDTO> updateCartItemQuantity(String isbn, UpdateCartItemRequestDTO updateCartItemRequestDTO) {
+        var result = updateCartItemQuantityUseCase.execute(isbn, updateCartItemRequestDTO.getQuantity());
+
+        checkNotFoundFailure(result);
 
         return ResponseEntity.ok(CartApiMapper.mapToViewCartResponseDTO(((Outcome.Success<ShoppingCart>) result).getValue()));
     }
@@ -55,5 +57,14 @@ public class CartController implements CartApi {
     public ResponseEntity<ViewCartResponseDTO> getCart() {
         var cart = viewCartUseCase.execute();
         return ResponseEntity.ok(CartApiMapper.mapToViewCartResponseDTO(cart));
+    }
+
+    private static void checkNotFoundFailure(Outcome<ShoppingCart> result) {
+        if (result instanceof Outcome.Failure<ShoppingCart> failure) {
+            if (failure.getMessage().contains("not found")) {
+                throw new ResponseStatusException(HttpStatus.NOT_FOUND, failure.getMessage());
+            }
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, failure.getMessage());
+        }
     }
 }

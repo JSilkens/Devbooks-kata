@@ -10,6 +10,7 @@ import be.jsilkens.devbooks.shopping.domain.money.Currency;
 import be.jsilkens.devbooks.shopping.domain.money.Money;
 import be.jsilkens.devbooks.shopping.usecase.AddBookToCartUseCase;
 import be.jsilkens.devbooks.shopping.usecase.RemoveBookFromCartUseCase;
+import be.jsilkens.devbooks.shopping.usecase.UpdateCartItemQuantityUseCase;
 import be.jsilkens.devbooks.shopping.usecase.ViewCartUseCase;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.BeforeEach;
@@ -28,8 +29,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static org.mockito.Mockito.when;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -44,6 +44,9 @@ class CartControllerTest {
 
     @Mock
     private RemoveBookFromCartUseCase removeBookFromCartUseCase;
+
+    @Mock
+    private UpdateCartItemQuantityUseCase updateCartItemQuantityUseCase;
 
     @Mock
     private ViewCartUseCase viewCartUseCase;
@@ -193,5 +196,64 @@ class CartControllerTest {
                         .accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().isBadRequest())
                 .andExpect(jsonPath("$.detail").value("Invalid ISBN13"));
+    }
+
+    @Test
+    @DisplayName("PATCH /api/cart/update/{isbn} should return 200 OK with updated quantity")
+    void updateCartItemQuantity_shouldReturn200_whenSuccessful() throws Exception {
+        // GIVEN
+        var isbn = "9780132350884";
+        var book = Book.builder()
+                .withTitle("Clean Code")
+                .withAuthor("Robert C. Martin")
+                .withPublicationYear(2008)
+                .withIsbn(new Isbn13(isbn))
+                .withPrice(new Money(new BigDecimal("50.00"), Currency.EUR))
+                .build();
+
+        var cart = ShoppingCart.builder()
+                .withItems(new ArrayList<>(List.of(
+                        CartItem.builder().withBook(book).withQuantity(3).build()
+                )))
+                .build();
+
+        when(updateCartItemQuantityUseCase.execute(isbn, 3)).thenReturn(new Outcome.Success<>(cart));
+
+        // WHEN & THEN
+        mockMvc.perform(patch("/cart/update/" + isbn)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content("{\"quantity\": 3}")
+                        .accept(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.books[0].title").value("Clean Code"))
+                .andExpect(jsonPath("$.books[0].quantity").value(3))
+                .andExpect(jsonPath("$.total_price").value(150.00));
+    }
+
+    @Test
+    @DisplayName("PATCH /api/cart/update/{isbn} should return 400 when quantity is negative")
+    void updateCartItemQuantity_shouldReturn400_whenQuantityNegative() throws Exception {
+        // GIVEN & WHEN & THEN
+        mockMvc.perform(patch("/cart/update/9780132350884")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content("{\"quantity\": -1}")
+                        .accept(MediaType.APPLICATION_JSON))
+                .andExpect(status().isBadRequest());
+    }
+
+    @Test
+    @DisplayName("PATCH /api/cart/update/{isbn} should return 404 when book not in cart")
+    void updateCartItemQuantity_shouldReturn404_whenBookNotInCart() throws Exception {
+        // GIVEN
+        when(updateCartItemQuantityUseCase.execute("9780132350884", 2))
+                .thenReturn(new Outcome.Failure<>("Book not found in cart"));
+
+        // WHEN & THEN
+        mockMvc.perform(patch("/cart/update/9780132350884")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content("{\"quantity\": 2}")
+                        .accept(MediaType.APPLICATION_JSON))
+                .andExpect(status().isNotFound())
+                .andExpect(jsonPath("$.detail").value("Book not found in cart"));
     }
 }
