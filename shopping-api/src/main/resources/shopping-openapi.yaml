@@ -114,9 +114,54 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/ProblemDetail'
-
+  /cart:
+    get:
+      tags:
+        - Cart
+      summary: Get the content of the shopping cart
+      operationId: getCart
+      responses:
+        '200':
+          description: Successfully retrieved the shopping cart
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ViewCartResponseDTO'
 components:
   schemas:
+    ViewCartResponseDTO:
+      type: object
+      required:
+        - books
+        - total_price
+      properties:
+        books:
+          type: array
+          items:
+            $ref: '#/components/schemas/ViewCartItemResponseDTO'
+        total_price:
+          type: number
+          example: 100.00
+    ViewCartItemResponseDTO:
+      type: object
+      required:
+        - title
+        - price_in_eur
+        - quantity
+        - details_link
+      properties:
+        title:
+          type: string
+          example: "Clean Code"
+        price_in_eur:
+          type: number
+          example: 50.00
+        quantity:
+          type: integer
+          example: 1
+        details_link:
+          type: string
+          example: "/api/book/9780132350884"
     AddCartItemRequestDTO:
       type: object
       required:

@@ -4,8 +4,10 @@ import be.jsilkens.devbooks.common.domain.validation.Outcome;
 import be.jsilkens.devbooks.shopping.api.mapper.CartApiMapper;
 import be.jsilkens.devbooks.shopping.api.model.AddCartItemRequestDTO;
 import be.jsilkens.devbooks.shopping.api.model.ShoppingCartResponseDTO;
+import be.jsilkens.devbooks.shopping.api.model.ViewCartResponseDTO;
 import be.jsilkens.devbooks.shopping.domain.ShoppingCart;
 import be.jsilkens.devbooks.shopping.usecase.AddBookToCartUseCase;
+import be.jsilkens.devbooks.shopping.usecase.ViewCartUseCase;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -17,6 +19,7 @@ import org.springframework.web.server.ResponseStatusException;
 public class CartController implements CartApi {
 
     private final AddBookToCartUseCase addBookToCartUseCase;
+    private final ViewCartUseCase viewCartUseCase;
 
     @Override
     public ResponseEntity<ShoppingCartResponseDTO> addBookToCart(AddCartItemRequestDTO addCartItemRequestDTO) {
@@ -30,5 +33,11 @@ public class CartController implements CartApi {
         }
 
         return ResponseEntity.ok(CartApiMapper.map(((Outcome.Success<ShoppingCart>) result).getValue()));
+    }
+
+    @Override
+    public ResponseEntity<ViewCartResponseDTO> getCart() {
+        var cart = viewCartUseCase.execute();
+        return ResponseEntity.ok(CartApiMapper.mapToViewCartResponseDTO(cart));
     }
 }
