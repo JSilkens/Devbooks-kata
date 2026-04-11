@@ -101,7 +101,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ShoppingCartResponseDTO'
+                $ref: '#/components/schemas/ViewCartResponseDTO'
         '400':
           description: Invalid ISBN format
           content:
@@ -206,6 +206,8 @@ components:
       required:
         - books
         - total_price
+        - total_savings
+        - discount_breakdown
       properties:
         books:
           type: array
@@ -213,7 +215,40 @@ components:
             $ref: '#/components/schemas/ViewCartItemResponseDTO'
         total_price:
           type: number
-          example: 100.00
+          example: 320.00
+        total_savings:
+          type: number
+          example: 80.00
+        discount_breakdown:
+          type: array
+          items:
+            $ref: '#/components/schemas/DiscountSetDTO'
+    DiscountSetDTO:
+      type: object
+      required:
+        - description
+        - books_included
+        - original_price
+        - discounted_price
+        - savings
+      properties:
+        description:
+          type: string
+          example: "Set of 4 unique books (20% discount)"
+        books_included:
+          type: array
+          items:
+            type: string
+          example: [ "Clean Code", "Clean Coder", "Clean Architecture", "TDD by Example" ]
+        original_price:
+          type: number
+          example: 200.00
+        discounted_price:
+          type: number
+          example: 160.00
+        savings:
+          type: number
+          example: 40.00
     ViewCartItemResponseDTO:
       type: object
       required:
@@ -252,39 +287,6 @@ components:
           type: integer
           minimum: 0
           example: 3
-
-    ShoppingCartResponseDTO:
-      type: object
-      required:
-        - books
-        - total_price
-      properties:
-        books:
-          type: array
-          items:
-            $ref: '#/components/schemas/CartItemResponseDTO'
-        total_price:
-          $ref: '#/components/schemas/Price'
-
-    CartItemResponseDTO:
-      type: object
-      required:
-        - title
-        - price
-        - quantity
-        - details_link
-      properties:
-        title:
-          type: string
-          example: "Clean Code"
-        price:
-          $ref: '#/components/schemas/Price'
-        quantity:
-          type: integer
-          example: 1
-        details_link:
-          type: string
-          example: "/api/book/9780132350884"
 
     BookDTO:
       type: object
