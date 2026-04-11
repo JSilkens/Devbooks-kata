@@ -83,8 +83,82 @@ paths:
               schema:
                 $ref: '#/components/schemas/ProblemDetail'
 
+  /cart/add:
+    post:
+      tags:
+        - Cart
+      summary: Add a book to the shopping cart
+      operationId: addBookToCart
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AddCartItemRequestDTO'
+      responses:
+        '200':
+          description: Successfully added the book to the cart
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ShoppingCartResponseDTO'
+        '400':
+          description: Invalid ISBN format
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetail'
+        '404':
+          description: Book not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetail'
+
 components:
   schemas:
+    AddCartItemRequestDTO:
+      type: object
+      required:
+        - isbn
+      properties:
+        isbn:
+          type: string
+          example: "9780132350884"
+
+    ShoppingCartResponseDTO:
+      type: object
+      required:
+        - books
+        - total_price
+      properties:
+        books:
+          type: array
+          items:
+            $ref: '#/components/schemas/CartItemResponseDTO'
+        total_price:
+          $ref: '#/components/schemas/Price'
+
+    CartItemResponseDTO:
+      type: object
+      required:
+        - title
+        - price
+        - quantity
+        - details_link
+      properties:
+        title:
+          type: string
+          example: "Clean Code"
+        price:
+          $ref: '#/components/schemas/Price'
+        quantity:
+          type: integer
+          example: 1
+        details_link:
+          type: string
+          example: "/api/book/9780132350884"
+
     BookDTO:
       type: object
       required:
@@ -173,9 +247,10 @@ components:
         value:
           type: string
           format: decimal
-          pattern: '^\d+\.\d{2}$'
+          pattern: '^\\d+\\.\\d{2}$'
           example: "50.00"
         currency:
+
           type: string
           example: "EUR"
 
