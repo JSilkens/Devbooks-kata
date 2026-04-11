@@ -11,6 +11,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Repository;
 
+import java.util.Collection;
+import java.util.List;
 import java.util.Optional;
 
 @Repository
@@ -25,9 +27,17 @@ public class BookPersistenceFacade implements BookRepository {
     }
 
     @Override
+    public List<Book> findAllByIsbnIn(Collection<Isbn13> isbns) {
+        var isbnValues = isbns.stream().map(Isbn13::value).toList();
+        return bookJpaRepository.findAllByIsbnIn(isbnValues).stream()
+                .map(BookMapper::map)
+                .toList();
+    }
+
+    @Override
     public PaginatedResult<BookListItem> findAll(int page, int size) {
         var pageable = PageRequest.of(page - 1, size);
-        var pagedResult = bookJpaRepository.findAllProjectedBy(pageable);
+        var pagedResult = bookJpaRepository.findBy(pageable);
 
         var items = pagedResult.getContent().stream()
                 .map(BookMapper::map)

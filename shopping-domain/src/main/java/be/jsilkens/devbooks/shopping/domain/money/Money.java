@@ -12,4 +12,19 @@ public record Money(BigDecimal amount, Currency currency) {
             amount = amount.setScale(2, RoundingMode.HALF_UP);
         }
     }
+
+    public Money add(Money other) {
+        if (!this.currency.equals(other.currency)) {
+            throw new IllegalArgumentException("Cannot add money with different currencies");
+        }
+        return new Money(this.amount.add(other.amount), this.currency);
+    }
+
+    public Money multiply(int quantity) {
+        return new Money(this.amount.multiply(BigDecimal.valueOf(quantity)), this.currency);
+    }
+
+    public static Money zero(Currency currency) {
+        return new Money(BigDecimal.ZERO, currency);
+    }
 }

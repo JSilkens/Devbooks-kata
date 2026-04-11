@@ -9,12 +9,14 @@ import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
+import java.math.RoundingMode;
+
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class BookApiMapper {
 
     public static BookDTO map(Book book) {
         var price = new Price();
-        price.setValue(book.getPrice().amount());
+        price.setValue(book.getPrice().amount().setScale(2, RoundingMode.HALF_UP));
         price.setCurrency(book.getPrice().currency().name());
 
         var bookDTO = new BookDTO();
@@ -29,7 +31,7 @@ public class BookApiMapper {
 
     public static BookListItemDTO map(BookListItem item) {
         var price = new Price();
-        price.setValue(item.price().amount());
+        price.setValue(item.price().amount().setScale(2, RoundingMode.HALF_UP));
         price.setCurrency(item.price().currency().name());
 
         var bookListItemDTO = new BookListItemDTO();

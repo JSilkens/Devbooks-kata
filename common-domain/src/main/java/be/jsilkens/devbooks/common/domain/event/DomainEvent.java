@@ -1,4 +1,4 @@
-package be.jsilkens.devbooks.common.domain;
+package be.jsilkens.devbooks.common.domain.event;
 
 public interface DomainEvent {
 
