@@ -7,6 +7,7 @@ import be.jsilkens.devbooks.shopping.api.model.ShoppingCartResponseDTO;
 import be.jsilkens.devbooks.shopping.api.model.ViewCartResponseDTO;
 import be.jsilkens.devbooks.shopping.domain.ShoppingCart;
 import be.jsilkens.devbooks.shopping.usecase.AddBookToCartUseCase;
+import be.jsilkens.devbooks.shopping.usecase.RemoveBookFromCartUseCase;
 import be.jsilkens.devbooks.shopping.usecase.ViewCartUseCase;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -19,6 +20,7 @@ import org.springframework.web.server.ResponseStatusException;
 public class CartController implements CartApi {
 
     private final AddBookToCartUseCase addBookToCartUseCase;
+    private final RemoveBookFromCartUseCase removeBookFromCartUseCase;
     private final ViewCartUseCase viewCartUseCase;
 
     @Override
@@ -33,6 +35,20 @@ public class CartController implements CartApi {
         }
 
         return ResponseEntity.ok(CartApiMapper.map(((Outcome.Success<ShoppingCart>) result).getValue()));
+    }
+
+    @Override
+    public ResponseEntity<ViewCartResponseDTO> removeBookFromCart(String isbn) {
+        var result = removeBookFromCartUseCase.execute(isbn);
+
+        if (result instanceof Outcome.Failure<ShoppingCart> failure) {
+            if (failure.getMessage().contains("not found")) {
+                throw new ResponseStatusException(HttpStatus.NOT_FOUND, failure.getMessage());
+            }
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, failure.getMessage());
+        }
+
+        return ResponseEntity.ok(CartApiMapper.mapToViewCartResponseDTO(((Outcome.Success<ShoppingCart>) result).getValue()));
     }
 
     @Override

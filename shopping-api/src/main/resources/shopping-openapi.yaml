@@ -114,6 +114,39 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/ProblemDetail'
+  /cart/remove/{isbn}:
+    delete:
+      tags:
+        - Cart
+      summary: Remove a book from the shopping cart
+      operationId: removeBookFromCart
+      parameters:
+        - name: isbn
+          in: path
+          required: true
+          description: The ISBN-13 of the book to remove
+          schema:
+            type: string
+            pattern: '^\d{13}$'
+      responses:
+        '200':
+          description: Successfully removed the book from the cart
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ViewCartResponseDTO'
+        '400':
+          description: Invalid ISBN format
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetail'
+        '404':
+          description: Book not found in cart
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetail'
   /cart:
     get:
       tags:

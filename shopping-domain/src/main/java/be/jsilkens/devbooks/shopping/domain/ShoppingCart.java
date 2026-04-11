@@ -1,5 +1,6 @@
 package be.jsilkens.devbooks.shopping.domain;
 
+import be.jsilkens.devbooks.shopping.domain.identifier.Isbn13;
 import be.jsilkens.devbooks.shopping.domain.money.Currency;
 import be.jsilkens.devbooks.shopping.domain.money.Money;
 import lombok.AccessLevel;
@@ -31,6 +32,10 @@ public class ShoppingCart {
                                 .withQuantity(1)
                                 .build())
                 );
+    }
+
+    public boolean removeBook(Isbn13 isbn) {
+        return items.removeIf(item -> item.getBook().getIsbn().equals(isbn));
     }
 
     public Money getTotalPrice() {
