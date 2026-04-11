@@ -1,0 +1,22 @@
+services:
+  postgres:
+    image: postgres:16.2-alpine
+    environment:
+      POSTGRES_PASSWORD: devbooks
+      POSTGRES_USER: devbooks
+      POSTGRES_DB: shopping
+    ports:
+      - 5432:5432
+
+  devbooks:
+    image: ghcr.io/jsilkens/devbooks-kata:latest
+    environment:
+      SPRING_PROFILES_ACTIVE: local
+      SPRING_DATASOURCE_URL: jdbc:postgresql://postgres:5432/shopping
+      SPRING_DATASOURCE_USERNAME: devbooks
+      SPRING_DATASOURCE_PASSWORD: devbooks
+      SPRING_DOCKER_COMPOSE_ENABLED: false
+    ports:
+      - 8080:8080
+    depends_on:
+      - postgres
