@@ -9,8 +9,7 @@ import java.util.UUID;
 
 @Entity
 @Table(name = "shopping_cart")
-@Getter
-@Setter
+@Data
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
@@ -20,5 +19,7 @@ public class CartDb {
 
     @OneToMany(mappedBy = "cart", cascade = CascadeType.ALL, orphanRemoval = true)
     @Builder.Default
+    @ToString.Exclude
+    @EqualsAndHashCode.Exclude
     private List<CartItemDb> items = new ArrayList<>();
 }

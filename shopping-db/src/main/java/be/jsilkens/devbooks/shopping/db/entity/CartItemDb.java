@@ -7,8 +7,7 @@ import java.util.UUID;
 
 @Entity
 @Table(name = "cart_item")
-@Getter
-@Setter
+@Data
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
@@ -19,6 +18,8 @@ public class CartItemDb {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "shopping_cart_id", nullable = false)
+    @ToString.Exclude
+    @EqualsAndHashCode.Exclude
     private CartDb cart;
 
     @Column(name = "book_isbn", nullable = false)
